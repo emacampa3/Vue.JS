@@ -1,19 +1,22 @@
 <template>
   <div class="container">
     <Header title="Task Tracker" />
-    <Tasks @delete-task="deleteTask" :tasks="tasks" />
+    <AddTask />
+    <Tasks @toggle-reminder="toggleReminder" @delete-task="deleteTask" :tasks="tasks" />
   </div>
 </template>
 
 <script>
 import Header from './components/Header'
 import Tasks from './components/Tasks.vue'
+import AddTask from './components/AddTask.vue'
 
 export default {
   name: 'App',
   components: {
     Header,
-    Tasks
+    Tasks,
+    AddTask,
   },
   data() {
     return {
@@ -25,7 +28,12 @@ export default {
       if(confirm('Are you sure?')) {
         this.tasks = this.tasks.filter((task) => task.id !== id)
       }
-    }
+    },
+    toggleReminder(id) {
+      this.tasks = this.tasks.map((task) => task.id === id ? {...task, reminder: !task.reminder} : task) 
+    }, /* mapping through the entire array, returning the array of updated tasks: for each task check if task.id is equal to id that is passed in,
+          if it is equal, return an array of objects where the reminder of the initial task is changed to the opposite of the current task reminder:
+          true turns to false and opposite; else we just return the initial task*/
   },
   created() { /* when created() runs we are filling the array */
     this.tasks = [
